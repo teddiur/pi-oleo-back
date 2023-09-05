@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import models
+from models import models
 
 DB_URL = 'sqlite:///oleo-descarte.sqlite3'
 
