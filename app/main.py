@@ -12,7 +12,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-from models.models import User, UserRequest, UserResponse, UserListResponse
+from app.models import User, UserRequest, UserResponse, UserListResponse
 from database import get_db, create_tables, drop_tables
 
 app = FastAPI()
