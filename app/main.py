@@ -14,7 +14,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-from app.models import User, UserRequest, UserResponse, UserListResponse
+from models.models import User, UserRequest, UserResponse, UserListResponse
 from database import get_db, create_tables, drop_tables
 
 load_dotenv()
