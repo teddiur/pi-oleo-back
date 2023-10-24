@@ -1,4 +1,5 @@
 import random
+import os
 
 from typing import Union, Annotated, Optional
 
@@ -11,9 +12,12 @@ from sqlalchemy.orm import sessionmaker, Session
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 from app.models import User, UserRequest, UserResponse, UserListResponse
 from database import get_db, create_tables, drop_tables
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -25,10 +29,9 @@ app.add_middleware(CORSMiddleware,
                    allow_methods=allow_all,
                    allow_headers=allow_all)
 
-# OAuth2 settings
-SECRET_KEY = "a23db52b1973daaa6bc79316699d209807c68d8c97de89d4bb6b289e73ad648f"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 240
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 # Password hashing settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
