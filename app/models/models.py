@@ -17,7 +17,6 @@ class User(Base):
     oil_quantity = Column(Integer)
     
 class UserRequest(BaseModel):
-    id: int
     email: str
     name: str
     password: str

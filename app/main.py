@@ -102,7 +102,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user.email
 
 
-@app.get("/protected-resource/")
+@app.get("/descubra/")
 async def protected_resource(current_user: UserResponse = Depends(get_current_user)):
     esfiha_payer = ["Ivan",
                     "Mari",
@@ -113,7 +113,7 @@ async def protected_resource(current_user: UserResponse = Depends(get_current_us
                     "Nayara"                       
                     ]
     
-    return {"msg": "Parabéns! Você acessou o endpoint protegido e agora vai descobrir quem vai pagar o próximo rodízio do Habibão!",
+    return {"msg": "Parabéns! Você acessou o endpoint secreto e agora vai descobrir quem vai pagar o próximo rodízio do Habibão!",
             "rodizio_por_conta_de": random.choice(esfiha_payer), 
             "user": current_user}
 
