@@ -55,7 +55,7 @@ async def create_user(userRequest: UserRequest, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == userRequest.email).first()
     
     if existing_user:
-        raise HTTPException(status_code=400, detail="O usuário informado já é cadastrado.")
+        raise HTTPException(status_code=409, detail="O usuário informado já é cadastrado.")
     
     hashed_password = pwd_context.hash(userRequest.password)
     
