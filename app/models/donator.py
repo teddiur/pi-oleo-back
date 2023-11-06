@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from pydantic import BaseModel
 
-from app.models.user import User
+from models.user import User
 
 
 class Donator(User):

@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from app.models.collector import Collector, CollectorRequest
-from app.models.donator import Donator, DonatorRequest
-from app.services.auth_service import hash_password
+from models.collector import Collector, CollectorRequest
+from models.donator import Donator, DonatorRequest
+from services.auth_service import hash_password
 
 
 def get_donator_by_email(db: Session, email: str):

@@ -2,8 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
-from app.models.collector import Collector
-from app.models.donator import Donator
+from models.collector import Collector
+from models.donator import Donator
 
 load_dotenv()
 

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.db.database import get_db
-from app.models.collector import CollectorRequest
-from app.models.donator import DonatorRequest
-from app.services import user_service
+from db.database import get_db
+from models.collector import CollectorRequest
+from models.donator import DonatorRequest
+from services import user_service
 
 router = APIRouter()
 
