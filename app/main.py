@@ -22,5 +22,5 @@ app.include_router(user.router)
 
 @app.on_event("startup")
 async def startup_event():
-    drop_tables()
+    # drop_tables()
     create_tables()

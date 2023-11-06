@@ -1,9 +1,11 @@
 import random
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from config import ACCESS_TOKEN_EXPIRE_MINUTES
 from services import auth_service
 from db.database import get_db
 
@@ -17,7 +19,10 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     if not user:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos!")
 
-    access_token = auth_service.create_access_token(data={"sub": user.email})
+    access_token = auth_service.create_access_token(
+        data={"sub": user.email},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 
