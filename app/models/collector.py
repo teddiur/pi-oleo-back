@@ -20,6 +20,17 @@ class Collector(User):
     }
 
 
+class CollectorRequest(BaseModel):
+    email: str
+    password: str
+    document: str
+    telephone: str
+    cep: str
+    address: str
+    district: str
+    allow_delivery: bool
+    user_type: str
+
 class CollectorResponse(BaseModel):
     msg: str
 

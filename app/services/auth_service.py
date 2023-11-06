@@ -1,17 +1,15 @@
+from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends, HTTPException
-from jose import JWTError, jwt
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt, JWTError
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from datetime import datetime, timedelta
-
 from sqlalchemy.orm import Session
 
-from app.db.database import get_db
-from app.models.collector import Collector
-from app.models.donator import Donator
 from app.config import SECRET_KEY, ALGORITHM
+from app.db.database import get_db
+from app.models.user import User
 
 # Password hashing settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -29,13 +27,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     except JWTError:
         raise HTTPException(status_code=403, detail="Erro ao validar credenciais")
 
-    donator = db.query(Donator).filter(Donator.email == email).first()
-    collector = db.query(Collector).filter(Collector.email == email).first()
+    user = db.query(User).filter(User.email == email).first()
 
-    if donator is None or collector is None:
-        raise HTTPException(status_code=403, detail="User não encontrado")
+    if not user:
+        raise HTTPException(status_code=403, detail="Usuário não encontrado")
 
-    return email
+    return user.email
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

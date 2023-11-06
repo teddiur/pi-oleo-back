@@ -1,6 +1,4 @@
-from database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 
 from app.models.user import User
@@ -17,6 +15,14 @@ class Donator(User):
     __mapper_args__ = {
         'polymorphic_identity': 'donator'
     }
+
+class DonatorRequest(BaseModel):
+    name: str
+    surname: str
+    email: str
+    password: str
+    telephone: str
+    user_type: str
 
 
 class DonatorResponse(BaseModel):
