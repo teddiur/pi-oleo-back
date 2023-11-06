@@ -40,5 +40,6 @@ class CollectorListResponse(BaseModel):
     telephone: str
     cep: str
     address: str
-    district: int
+    district: str
+    document: str
     allow_delivery: bool

@@ -2,8 +2,12 @@ from sqlalchemy.orm import Session
 
 from models.collector import Collector, CollectorRequest
 from models.donator import Donator, DonatorRequest
+from models.user import User
 from services.auth_service import hash_password
 
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
 
 def get_donator_by_email(db: Session, email: str):
     return db.query(Donator).filter(Donator.email == email).first()
@@ -28,7 +32,7 @@ def create_donator(db: Session, request: DonatorRequest):
         name=request.name,
         surname=request.surname,
         email=request.email,
-        password=hashed_password,
+        hashed_password=hashed_password,
         telephone=request.telephone
     )
 

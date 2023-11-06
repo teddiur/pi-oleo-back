@@ -1,19 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from db.database import get_db
-from models.collector import CollectorRequest
-from models.donator import DonatorRequest
+from models.collector import CollectorRequest, CollectorListResponse
+from models.donator import DonatorRequest, DonatorListResponse
 from services import user_service
 
 router = APIRouter()
 
 
-@router.get(path="/donators/", description="Lista todos os usuários doadores")
+@router.get(path="/donators/", description="Lista todos os usuários doadores", response_model=list[DonatorListResponse])
 def get_all_donators(db: Session = Depends(get_db)):
     return user_service.get_donators(db)
 
-@router.get(path="/collectors/", description="Lista todos os usuários coletores")
+@router.get(path="/collectors/",
+            description="Lista todos os usuários coletores",
+            response_model=list[CollectorListResponse])
 def get_all_collectors(db: Session = Depends(get_db)):
     return user_service.get_collectors(db)
 
@@ -23,14 +25,14 @@ async def create_donator(request: DonatorRequest, db: Session = Depends(get_db))
     if request.user_type != "doador":
         raise HTTPException(status_code=400, detail="Tipo de usuário incorreto.")
 
-    existing_donator = user_service.get_donator_by_email(db, request.email)
+    existing_donator = user_service.get_user_by_email(db, request.email)
 
     if existing_donator:
         raise HTTPException(status_code=409, detail="O usuário informado já é cadastrado.")
 
     user_service.create_donator(db, request)
 
-    return {"msg": "Uhuu! Usuário criado com sucesso!"}
+    return Response(status_code=200)
 
 
 @router.post(path="/collector/", description="Cria um usuário retirador")
@@ -38,11 +40,11 @@ async def create_collector(request: CollectorRequest, db: Session = Depends(get_
     if request.user_type != "retirador":
         raise HTTPException(status_code=400, detail="Tipo de usuário incorreto.")
 
-    existing_collector = user_service.get_collector_by_email(db, request.email)
+    existing_collector = user_service.get_user_by_email(db, request.email)
 
     if existing_collector:
         raise HTTPException(status_code=409, detail="O usuário informado já é cadastrado.")
 
     user_service.create_collector(db, request)
 
-    return {"msg": "Uhuu! Usuário criado com sucesso!"}
+    return Response(status_code=200)
