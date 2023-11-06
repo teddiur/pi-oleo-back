@@ -23,14 +23,18 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: Optional[str] = payload.get("sub")
         if email is None:
-            raise HTTPException(status_code=403, detail="Erro ao validar credenciais")
+            raise HTTPException(status_code=401,
+                                detail="Erro ao validar credenciais",
+                                headers={"WWW-Authenticate": "Bearer"})
     except JWTError:
-        raise HTTPException(status_code=403, detail="Erro ao validar credenciais")
+        raise HTTPException(status_code=401,
+                            detail="Erro ao validar credenciais",
+                            headers={"WWW-Authenticate": "Bearer"})
 
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
-        raise HTTPException(status_code=403, detail="Usuário não encontrado")
+        raise HTTPException(status_code=401, detail="Erro ao validar credenciais")
 
     return user.email
 
@@ -44,7 +48,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
         expire = datetime.utcnow() + timedelta(minutes=15)
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
 
@@ -69,9 +73,23 @@ def validate_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
+
         if email is None:
-            raise HTTPException(status_code=403, detail="Erro ao validar token")
+            raise HTTPException(status_code=401,
+                                detail="Erro ao validar token",
+                                headers={"WWW-Authenticate": "Bearer"})
+
+        expiration_time = payload.get("exp")
+        current_time = datetime.utcnow()
+
+        if expiration_time is not None and expiration_time < current_time.timestamp():
+            raise HTTPException(status_code=401,
+                                detail="Token expirado",
+                                headers={"WWW-Authenticate": "Bearer"})
+
     except JWTError:
-        raise HTTPException(status_code=403, detail="Erro ao validar token")
+        raise HTTPException(status_code=401,
+                            detail="Erro ao validar token",
+                            headers={"WWW-Authenticate": "Bearer"})
 
     return {"email": email}
