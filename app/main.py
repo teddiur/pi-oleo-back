@@ -1,11 +1,23 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from db.database import create_tables, drop_tables
-from middleware import get_cors_middleware
+from api.v1.routes import user, auth
+
+allow_all = ['*']
 
 app = FastAPI()
 
-app.add_middleware(get_cors_middleware())
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allow_all,
+    allow_credentials=True,
+    allow_methods=allow_all,
+    allow_headers=allow_all,
+)
+
+app.include_router(auth.router)
+app.include_router(user.router)
 
 
 @app.on_event("startup")
