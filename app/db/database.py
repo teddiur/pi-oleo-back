@@ -2,6 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from models.collector import Collector
+from models.donator import Donator
+
 DB_URL = 'sqlite:///oleo-descarte.sqlite3'
 
 engine = create_engine(DB_URL, connect_args={'check_same_thread': False})
@@ -18,12 +21,16 @@ def get_db():
 
 
 def create_tables():
+    db = sessionlocal()
     with engine.connect() as connection:
         try:        
             Base.metadata.create_all(bind=engine)
-            # seed_data()
+            seed_data()
         except Exception as e:
             print(f"Error creating tables: {str(e)}")
+        finally:
+            db.close()
+
 
 def drop_tables():
     with engine.connect() as connection:
@@ -31,15 +38,35 @@ def drop_tables():
             Base.metadata.drop_all(bind=engine)
         except Exception as e:
             print(f"Error dropping tables: {str(e)}")
-    
+
 def seed_data():
     db = sessionlocal()
-    try:
-        # user1 = user.User(email="user1@example.com", name="User 1", hashed_password="password1", city="City 1", district="District 1", oil_quantity=100)
-        # user2 = user.User(email="user2@example.com", name="User 2", hashed_password="password2", city="City 2", district="District 2", oil_quantity=200)
 
-        # db.add(user1)
-        # db.add(user2)
+    try:
+        donator = Donator(
+            email="donator@example.com",
+            name="donator",
+            surname="fernandes",
+            hashed_password="donator",
+            telephone="11912345678"
+        )
+
+        collector = Collector(
+            document="12345560-12",
+            email="collector@example.com",
+            telephone="11912345678",
+            hashed_password="collector",
+            cep="0123012",
+            address="aquela rua lá",
+            district="aquele bairro lá",
+            allow_delivery=True
+        )
+
+        db.add(donator)
+        db.add(collector)
         db.commit()
     finally:
         db.close()
+
+
+

@@ -21,7 +21,7 @@ def get_all_collectors(db: Session = Depends(get_db)):
 
 
 @router.post(path="/donator/", description="Cria um usuário doador")
-async def create_donator(request: DonatorRequest, db: Session = Depends(get_db)):
+def create_donator(request: DonatorRequest, db: Session = Depends(get_db)):
     if request.user_type != "doador":
         raise HTTPException(status_code=400, detail="Tipo de usuário incorreto.")
 
@@ -36,7 +36,7 @@ async def create_donator(request: DonatorRequest, db: Session = Depends(get_db))
 
 
 @router.post(path="/collector/", description="Cria um usuário retirador")
-async def create_collector(request: CollectorRequest, db: Session = Depends(get_db)):
+def create_collector(request: CollectorRequest, db: Session = Depends(get_db)):
     if request.user_type != "retirador":
         raise HTTPException(status_code=400, detail="Tipo de usuário incorreto.")
 
